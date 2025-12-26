@@ -10,11 +10,13 @@ import { defineConfig } from 'vite'
 import type { PluginOption } from 'vite'
 
 // https://vitejs.dev/config/
+
 export default defineConfig(async ({ mode }) => {
   const latestCommitHash = await new Promise<string>((resolve) => {
     return getLastCommit((err, commit) => (err ? 'unknown' : resolve(commit.shortHash)))
   })
   return {
+    base: '/qwerty-learner/', // 在此处添加 base 路径，确保与你的仓库名一致
     plugins: [
       react({ babel: { plugins: [jotaiDebugLabel, jotaiReactRefresh] } }),
       visualizer() as PluginOption,
