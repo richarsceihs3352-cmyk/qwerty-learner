@@ -5,6 +5,8 @@ on:
       - master # 或者是你的主分支名
 env:
   REACT_APP_DEPLOY_ENV: pages
+permissions:
+  contents: write # 必须赋予写权限才能推送到 gh-pages 分支
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,12 +14,13 @@ jobs:
       matrix:
         node-version: [18.17.0]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4 # 升级到 v4
       
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # 升级到 v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'yarn' # 启用缓存加速构建
           
       - name: Install Packages
         run: yarn
@@ -26,9 +29,9 @@ jobs:
         run: yarn build
         
       - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3 # 该插件目前 v3 仍可使用，关键是 checkout 和 setup-node 需要升级
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
           
       - name: Sync to Gitee
